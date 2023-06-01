@@ -11,15 +11,15 @@ public class ForwardLinked<T> implements Iterable<T> {
     private Node<T> head;
 
     public void add(T value) {
-        ForwardLinked.Node<T> newNode = new ForwardLinked.Node<>(value);
-        ForwardLinked.Node<T> x = head;
+        Node<T> newNode = new Node<>(value, null);
+        Node<T> node = head;
         if (size == 0) {
             head = newNode;
         } else {
-            while (x.next != null) {
-                x = x.next;
+            while (node.next != null) {
+                node = node.next;
             }
-            x.next = newNode;
+            node.next = newNode;
         }
         modCount++;
         size++;
@@ -27,11 +27,11 @@ public class ForwardLinked<T> implements Iterable<T> {
 
     public T get(int index) {
         Objects.checkIndex(index, size);
-        ForwardLinked.Node<T> x = head;
+        Node<T> node = head;
         for (int i = 0; i < index; i++) {
-            x = x.next;
+            node = node.next;
         }
-        return x.item;
+        return node.item;
     }
 
     public T deleteFirst() {
@@ -39,19 +39,18 @@ public class ForwardLinked<T> implements Iterable<T> {
             throw new NoSuchElementException();
         }
         final T element = head.item;
-        final Node<T> x = head.next;
+        final Node<T> node = head.next;
         head.item = null;
         head.next = null;
-        head = x;
+        head = node;
         size--;
         modCount++;
         return element;
     }
 
     public void addFirst(T value) {
-        ForwardLinked.Node<T> x = head;
-        head = new ForwardLinked.Node<T>(value);
-        head.next = x;
+        Node<T> node = head;
+        head = new Node<T>(value, node);
         modCount++;
         size++;
     }
@@ -61,14 +60,14 @@ public class ForwardLinked<T> implements Iterable<T> {
         return new Iterator<T>() {
 
             private final int expectedModCount = modCount;
-            ForwardLinked.Node<T> x = head;
+            Node<T> node = head;
 
             @Override
             public boolean hasNext() {
                 if (modCount != expectedModCount) {
                     throw new ConcurrentModificationException();
                 }
-                return x != null;
+                return node != null;
             }
 
             @Override
@@ -76,8 +75,8 @@ public class ForwardLinked<T> implements Iterable<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                T res = x.item;
-                x = x.next;
+                T res = node.item;
+                node = node.next;
                 return res;
             }
         };
@@ -85,11 +84,11 @@ public class ForwardLinked<T> implements Iterable<T> {
 
     private static class Node<T> {
         private T item;
-        private ForwardLinked.Node<T> next;
+        private Node<T> next;
 
-        Node(T element) {
+        Node(T element, Node<T> next) {
             this.item = element;
-            this.next = null;
+            this.next = next;
         }
     }
 }
