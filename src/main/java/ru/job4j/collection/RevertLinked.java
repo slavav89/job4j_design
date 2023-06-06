@@ -23,7 +23,7 @@ public class RevertLinked<T> implements Iterable<T> {
     }
 
     public boolean revert() {
-        boolean result = false;
+        boolean result = modCount > 1;
         if (modCount > 1) {
             Node<T> prev = null;
             Node<T> after;
@@ -34,7 +34,6 @@ public class RevertLinked<T> implements Iterable<T> {
                 head = after;
             }
             head = prev;
-            result = true;
         }
         return result;
     }
