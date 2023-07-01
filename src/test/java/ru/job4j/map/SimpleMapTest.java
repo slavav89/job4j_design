@@ -225,4 +225,22 @@ class SimpleMapTest {
         maps.put(1, "1");
         assertThatThrownBy(it::hasNext).isInstanceOf(ConcurrentModificationException.class);
     }
+
+    @Test
+    void whenCheckPutManyObjects() {
+        assertThat(map.put(null, "0")).isTrue();
+        assertThat(map.put(5, "5")).isTrue();
+        assertThat(map.put(6, "6")).isTrue();
+        assertThat(map.put(7, "7")).isTrue();
+        assertThat(map.put(8, "8")).isTrue();
+        assertThat(map.put(9, "9")).isTrue();
+        assertThat(map.put(10, "10")).isTrue();
+        assertThat(map.put(11, "11")).isTrue();
+        assertThat(map.put(12, "12")).isTrue();
+        assertThat(map.put(13, "13")).isTrue();
+        assertThat(map.put(14, "14")).isTrue();
+        assertThat(map.put(15, "15")).isTrue();
+        assertThat(map.put(16, "16")).isTrue();
+        assertThat(map).hasSize(17);
+    }
 }

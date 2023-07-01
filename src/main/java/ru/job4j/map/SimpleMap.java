@@ -17,8 +17,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
         if (count >= LOAD_FACTOR * capacity) {
             expand();
         }
-        int hashCode = key == null ? 0 : key.hashCode();
-        int index = indexFor(hash(hashCode));
+        int index = indexKey(key);
         boolean result = table[index] == null;
         if (result) {
             table[index] = new MapEntry<>(key, value);
@@ -29,11 +28,15 @@ public class SimpleMap<K, V> implements Map<K, V> {
     }
 
     private int hash(int hashCode) {
-        return hashCode ^ (hashCode >>> capacity);
+        return hashCode ^ (hashCode >>> 16);
     }
 
     private int indexFor(int hash) {
         return (capacity - 1) & hash;
+    }
+
+    private int indexKey(K key) {
+        return indexFor(hash(key == null ? 0 : key.hashCode()));
     }
 
     private void expand() {
@@ -42,8 +45,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
         table = new MapEntry[capacity];
         for (var element : oldTable) {
             if (element != null) {
-                int hashCode = element.key == null ? 0 : element.key.hashCode();
-                int index = indexFor(hash(hashCode));
+                int index = indexKey(element.key);
                 table[index] = element;
             }
         }
@@ -52,14 +54,9 @@ public class SimpleMap<K, V> implements Map<K, V> {
     @Override
     public V get(K key) {
         V result = null;
-        int index = indexFor(hash(key == null ? 0 : key.hashCode()));
-        if (table[index] != null) {
-            if (key == null && table[index].key == null
-                    || key != null && table[index].key != null
-                    && table[index].key.hashCode() == key.hashCode()
-                    && key.equals(table[index].key)) {
-                result = table[index].value;
-            }
+        int index = indexKey(key);
+        if (equalsKey(key, index)) {
+            result = table[index].value;
         }
         return result;
     }
@@ -67,17 +64,22 @@ public class SimpleMap<K, V> implements Map<K, V> {
     @Override
     public boolean remove(K key) {
         boolean result = false;
-        int index = indexFor(hash(key == null ? 0 : key.hashCode()));
-        if (table[index] != null) {
-            if (key == null || table[index].key.hashCode() == key.hashCode()
-                    && key.equals(table[index].key)) {
-                table[index] = null;
-                count--;
-                modCount++;
-                result = true;
-            }
+        int index = indexKey(key);
+        if (equalsKey(key, index)) {
+            table[index] = null;
+            count--;
+            modCount++;
+            result = true;
         }
         return result;
+    }
+
+    private boolean equalsKey(K key, int index) {
+        return table[index] != null
+                && (key == null && table[index].key == null
+                || key != null && table[index].key != null
+                && table[index].key.hashCode() == key.hashCode()
+                && key.equals(table[index].key));
     }
 
     @Override
