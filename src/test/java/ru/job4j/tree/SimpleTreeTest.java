@@ -15,6 +15,7 @@ public class SimpleTreeTest {
         tree.add(4, 5);
         tree.add(5, 6);
         assertThat(tree.findBy(6)).isPresent();
+        assertThat(tree.isBinary()).isFalse();
     }
 
     @Test
@@ -22,6 +23,7 @@ public class SimpleTreeTest {
         Tree<Integer> tree = new SimpleTree<>(1);
         tree.add(1, 2);
         assertThat(tree.findBy(7)).isEmpty();
+        assertThat(tree.isBinary()).isTrue();
     }
 
     @Test
@@ -35,6 +37,7 @@ public class SimpleTreeTest {
         assertThat(tree.add(2, 6)).isFalse();
         assertThat(tree.add(3, 5)).isFalse();
         assertThat(tree.add(4, 1)).isFalse();
+        assertThat(tree.isBinary()).isFalse();
     }
 
     @Test
@@ -45,6 +48,7 @@ public class SimpleTreeTest {
         tree.add(1, 4);
         tree.add(4, 5);
         tree.add(5, 6);
+        assertThat(tree.isBinary()).isFalse();
         assertThat(tree.add(2, 7)).isTrue();
         assertThat(tree.add(3, 8)).isTrue();
         assertThat(tree.add(4, 9)).isTrue();
