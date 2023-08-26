@@ -1,0 +1,3 @@
+Из PrintStream в FileOutputStream
+Новая строкаИз PrintStream в FileOutputStream
+Новая строка
