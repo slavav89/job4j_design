@@ -17,9 +17,7 @@ public class LogFilter {
     public List<String> filter() {
         try (BufferedReader in = new BufferedReader(new FileReader(file))) {
             in.lines()
-                    .map(string -> string.split(" "))
-                    .filter(array -> Objects.equals(array[array.length - 2], "404"))
-                    .map(array -> String.join(" ", array))
+                    .filter(s -> s.contains(" 404 "))
                     .forEach(System.out::println);
         } catch (IOException e) {
             e.printStackTrace();
