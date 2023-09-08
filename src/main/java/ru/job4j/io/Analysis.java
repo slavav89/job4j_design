@@ -15,7 +15,7 @@ public class Analysis {
                     out.append(array[1]).append(";").append(flag ? "" : System.lineSeparator());
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
