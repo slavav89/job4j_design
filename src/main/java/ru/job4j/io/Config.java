@@ -20,17 +20,21 @@ public class Config {
             for (var str : array) {
                 if (!str.isEmpty() && !str.startsWith("#")) {
                     var arrayString = str.split("=", 2);
-                    if (arrayString[0].isEmpty()
-                            || arrayString[arrayString.length - 1].isEmpty()
-                            || arrayString.length < 2) {
-                        throw new IllegalArgumentException();
-                    }
+                    checkExceptions(arrayString);
                     values.put(arrayString[0], arrayString[1]);
                 }
             }
             values.put(array[0], array[1]);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkExceptions(String[] array) {
+        if (array[0].isEmpty()
+                || array[array.length - 1].isEmpty()
+                || array.length < 2) {
+            throw new IllegalArgumentException();
         }
     }
 
