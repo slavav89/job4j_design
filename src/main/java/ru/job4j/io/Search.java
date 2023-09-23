@@ -20,7 +20,7 @@ public class Search {
         return searcher.getPaths();
     }
 
-    public static void validate(String[] args) {
+    private static void validate(String[] args) {
         if (args.length != 2) {
             throw new IllegalArgumentException("The program must have two parameters");
         }
