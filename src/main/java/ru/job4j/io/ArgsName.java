@@ -15,24 +15,22 @@ public class ArgsName {
 
     private void parse(String[] args) {
         for (var string : args) {
-            String[] keyValue = string.split("=", 2);
             if (!string.contains("=")) {
                 throw new IllegalArgumentException("Error: This argument '%s' does not contain an equal sign"
                         .formatted(string));
             }
-            if (!keyValue[0].startsWith("-")) {
-                throw new IllegalArgumentException("Error: This argument "
-                        + "'%s' does not start with a '-' character".formatted(string));
-            }
-
-            var key = keyValue[0].substring(1);
-            var value = keyValue[1];
-
-            if (key.length() == 0) {
+            if (string.startsWith("-=")) {
                 throw new IllegalArgumentException("Error: This argument '%s' does not contain a key"
                         .formatted(string));
             }
-            if (value.length() == 0) {
+            if (!string.startsWith("-")) {
+                throw new IllegalArgumentException("Error: This argument "
+                        + "'%s' does not start with a '-' character".formatted(string));
+            }
+            String[] keyValue = string.split("=", 2);
+            var key = keyValue[0].substring(1);
+            var value = keyValue[1];
+            if (value.isBlank()) {
                 throw new IllegalArgumentException("Error: This argument '%s' does not contain a value"
                         .formatted(string));
             }
