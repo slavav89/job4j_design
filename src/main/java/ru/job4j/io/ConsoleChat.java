@@ -10,6 +10,7 @@ public class ConsoleChat {
     private static final String CONTINUE = "продолжить";
     private final String path;
     private final String botAnswers;
+    private Random random = new Random();
 
     public ConsoleChat(String path, String botAnswers) {
         this.path = path;
@@ -33,7 +34,7 @@ public class ConsoleChat {
                 answer = true;
             }
             if (answer) {
-                int index = new Random().nextInt(phrases.size());
+                int index = random.nextInt(phrases.size());
                 String reply = phrases.get(index);
                 System.out.println(reply);
                 dialogue.add(reply);
