@@ -1,24 +1,13 @@
 package ru.job4j.io.serialization.java;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 
-@XmlRootElement(name = "bus")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Bus {
-    @XmlAttribute
+
     private boolean passenger;
-    @XmlAttribute
     private int seat;
-    @XmlAttribute
     private String nameDriver;
     private Contact contactDriver;
     private String[] namePassengers;
@@ -32,6 +21,26 @@ public class Bus {
         this.contactDriver = contactDriver;
         this.nameDriver = nameDriver;
         this.namePassengers = namePassengers;
+    }
+
+    public boolean getPassenger() {
+        return passenger;
+    }
+
+    public int getSeat() {
+        return seat;
+    }
+
+    public String getNameDriver() {
+        return nameDriver;
+    }
+
+    public Contact getContactDriver() {
+        return contactDriver;
+    }
+
+    public String[] getNamePassengers() {
+        return namePassengers;
     }
 
     @Override
@@ -48,22 +57,16 @@ public class Bus {
     public static void main(String[] args) throws Exception {
         Bus bus = new Bus(true, 18,
                 new Contact(777, "8 999 777 22 33"), "Ivan", new String[]{"Andrey, Igor"});
-        /** Получаем контекст для доступа к АПИ */
-        JAXBContext context = JAXBContext.newInstance(Bus.class);
-        /** Подключаем сериализатор*/
-        Marshaller marshaller = context.createMarshaller();
-        /** Указываем, что нам нужно форматирование */
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        String xml = "";
-        try (StringWriter writer = new StringWriter()) {
-            marshaller.marshal(bus, writer);
-            xml = writer.getBuffer().toString();
-            System.out.println(xml);
-        }
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        try (StringReader reader = new StringReader(xml)) {
-            Bus result = (Bus) unmarshaller.unmarshal(reader);
-            System.out.println(result);
-        }
+        JSONObject jsonContact = new JSONObject();
+        jsonContact.put("zipCode", bus.getContactDriver().getZipCode());
+        jsonContact.put("phone", bus.getContactDriver().getPhone());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("passenger", bus.getPassenger());
+        jsonObject.put("seat", bus.getSeat());
+        jsonObject.put("nameDriver", bus.getNameDriver());
+        jsonObject.put("contactDriver", jsonContact);
+        jsonObject.put("namePassengers", bus.getNamePassengers());
+        System.out.println(jsonObject.toString());
+        System.out.println(new JSONObject(bus).toString());
     }
 }
