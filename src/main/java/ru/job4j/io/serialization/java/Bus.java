@@ -1,16 +1,30 @@
 package ru.job4j.io.serialization.java;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Arrays;
 
+@XmlRootElement(name = "bus")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Bus {
-    private final boolean passenger;
-    private final int seat;
-    private final Contact contactDriver;
-    private final String nameDriver;
-    private final String[] namePassengers;
+    @XmlAttribute
+    private boolean passenger;
+    @XmlAttribute
+    private int seat;
+    @XmlAttribute
+    private String nameDriver;
+    private Contact contactDriver;
+    private String[] namePassengers;
+
+    public Bus() {
+    }
 
     public Bus(boolean passenger, int seat, Contact contactDriver, String nameDriver, String[] namePassengers) {
         this.passenger = passenger;
@@ -31,13 +45,25 @@ public class Bus {
                 + '}';
     }
 
-    public static void main(String[] args) {
-        final Bus bus = new Bus(true, 18,
+    public static void main(String[] args) throws Exception {
+        Bus bus = new Bus(true, 18,
                 new Contact(777, "8 999 777 22 33"), "Ivan", new String[]{"Andrey, Igor"});
-        final Gson gson = new GsonBuilder().create();
-        String busJson = gson.toJson(bus);
-        System.out.println(busJson);
-        final Bus busFromJson = gson.fromJson(busJson, Bus.class);
-        System.out.println(busFromJson);
+        /** Получаем контекст для доступа к АПИ */
+        JAXBContext context = JAXBContext.newInstance(Bus.class);
+        /** Подключаем сериализатор*/
+        Marshaller marshaller = context.createMarshaller();
+        /** Указываем, что нам нужно форматирование */
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        String xml = "";
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(bus, writer);
+            xml = writer.getBuffer().toString();
+            System.out.println(xml);
+        }
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        try (StringReader reader = new StringReader(xml)) {
+            Bus result = (Bus) unmarshaller.unmarshal(reader);
+            System.out.println(result);
+        }
     }
 }
