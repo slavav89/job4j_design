@@ -17,12 +17,12 @@ public abstract class AbstractCache<K, V> {
         if (!cache.containsKey(key)) {
             value = load(key);
             put(key, value);
-            return value;
-        }
-        value = cache.get(key).get();
-        if (value == null) {
-            value = load(key);
-            put(key, value);
+        } else {
+            value = cache.get(key).get();
+            if (value == null) {
+                value = load(key);
+                put(key, value);
+            }
         }
         return value;
     }
